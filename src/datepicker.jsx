@@ -48,6 +48,7 @@ var DatePicker = React.createClass({
       return (
         <Popover anchor={this.props.anchor}>
           <Calendar
+            ref='calendar'
             selected={this.props.selected}
             onSelect={this.handleSelect}
             hideCalendar={this.hideCalendar}
@@ -64,6 +65,7 @@ var DatePicker = React.createClass({
     return (
       <div>
         <DateInput
+          ref='dateInput'
           date={this.props.selected}
           dateFormat={this.props.dateFormat}
           focus={this.state.focus}
