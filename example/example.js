@@ -304,7 +304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _getAnchorElement: function _getAnchorElement() {
 	    if (!this.props.anchor) {
 	      return this.getDOMNode().parentElement;
-	    } else if (typoef(this.props.anchor) === "function") {
+	    } else if (typeof this.props.anchor === "function") {
 	      return this.props.anchor();
 	    } else {
 	      return this.props.anchor;
