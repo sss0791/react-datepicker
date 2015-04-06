@@ -31,7 +31,15 @@ var Popover = React.createClass({
   },
 
   _getAnchorElement: function(){
-    return this.props.anchor ? this.props.anchor : this.getDOMNode().parentElement;
+    if(!this.props.anchor){
+      return this.getDOMNode().parentElement;
+    }
+    else if(typoef(this.props.anchor) === 'function'){
+      return this.props.anchor();
+    }
+    else {
+      return this.props.anchor;
+    }
   },
 
   _tetherOptions: function() {
