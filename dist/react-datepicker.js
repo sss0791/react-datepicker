@@ -134,7 +134,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        setSelected: this.setSelected,
 	        hideCalendar: this.hideCalendar,
 	        placeholderText: this.props.placeholderText,
-	        component: this.props.component }),
+	        input: this.props.input,
+	        inputProps: this.props.inputProps }),
 	      this.calendar()
 	    );
 	  }
@@ -478,6 +479,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 	var DateUtil = __webpack_require__(3);
 	var moment = __webpack_require__(6);
+	var assign = __webpack_require__(10);
 
 	var DateInput = React.createClass({
 	  displayName: "DateInput",
@@ -485,7 +487,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      dateFormat: "YYYY-MM-DD",
-	      component: "input"
+	      input: "input"
 	    };
 	  },
 
@@ -551,7 +553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
-	    return React.createElement(this.props.component, {
+	    return React.createElement(this.props.input, assign({
 	      ref: "input",
 	      type: "text",
 	      value: this.state.value,
@@ -561,7 +563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onChange: this.handleChange,
 	      className: "datepicker__input",
 	      placeholder: this.props.placeholderText
-	    });;
+	    }, this.props.inputProps));
 	  }
 	});
 
@@ -2077,6 +2079,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	return this.Tether;
 
 	}));
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule Object.assign
+	 */
+
+	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign
+
+	'use strict';
+
+	function assign(target, sources) {
+	  if (target == null) {
+	    throw new TypeError('Object.assign target cannot be null or undefined');
+	  }
+
+	  var to = Object(target);
+	  var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	  for (var nextIndex = 1; nextIndex < arguments.length; nextIndex++) {
+	    var nextSource = arguments[nextIndex];
+	    if (nextSource == null) {
+	      continue;
+	    }
+
+	    var from = Object(nextSource);
+
+	    // We don't currently support accessors nor proxies. Therefore this
+	    // copy cannot throw. If we ever supported this then we must handle
+	    // exceptions and side-effects. We don't support symbols so they won't
+	    // be transferred.
+
+	    for (var key in from) {
+	      if (hasOwnProperty.call(from, key)) {
+	        to[key] = from[key];
+	      }
+	    }
+	  }
+
+	  return to;
+	}
+
+	module.exports = assign;
 
 
 /***/ }

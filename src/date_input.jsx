@@ -1,13 +1,14 @@
 var React = require('react/addons');
 var DateUtil = require('./util/date');
 var moment = require('moment');
+var assign = require('react/lib/Object.assign');
 
 var DateInput = React.createClass({
 
   getDefaultProps: function() {
     return {
       dateFormat: 'YYYY-MM-DD',
-      component: 'input'
+      input: 'input'
     };
   },
 
@@ -73,17 +74,17 @@ var DateInput = React.createClass({
   },
 
   render: function() {
-    return React.createElement(this.props.component, {
-      ref: "input",
-      type: "text",
-      value: this.state.value,
-      onClick: this.handleClick,
-      onKeyDown: this.handleKeyDown,
-      onFocus: this.props.onFocus,
-      onChange: this.handleChange,
-      className: "datepicker__input",
-      placeholder: this.props.placeholderText
-    });;
+    return React.createElement(this.props.input, assign({
+        ref: "input",
+        type: "text",
+        value: this.state.value,
+        onClick: this.handleClick,
+        onKeyDown: this.handleKeyDown,
+        onFocus: this.props.onFocus,
+        onChange: this.handleChange,
+        className: "datepicker__input",
+        placeholder: this.props.placeholderText
+      }, this.props.inputProps));
   }
 });
 
