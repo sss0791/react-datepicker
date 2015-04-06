@@ -34,7 +34,7 @@ var Popover = React.createClass({
     if(!this.props.anchor){
       return this.getDOMNode().parentElement;
     }
-    else if(typoef(this.props.anchor) === 'function'){
+    else if(typeof(this.props.anchor) === 'function'){
       return this.props.anchor();
     }
     else {
