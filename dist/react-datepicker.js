@@ -109,6 +109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        Popover,
 	        { anchor: this.props.anchor },
 	        React.createElement(Calendar, {
+	          ref: "calendar",
 	          selected: this.props.selected,
 	          onSelect: this.handleSelect,
 	          hideCalendar: this.hideCalendar,
@@ -125,6 +126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "div",
 	      null,
 	      React.createElement(DateInput, {
+	        ref: "dateInput",
 	        date: this.props.selected,
 	        dateFormat: this.props.dateFormat,
 	        focus: this.state.focus,
@@ -188,7 +190,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  _getAnchorElement: function _getAnchorElement() {
-	    return this.props.anchor ? this.props.anchor : this.getDOMNode().parentElement;
+	    if (!this.props.anchor) {
+	      return this.getDOMNode().parentElement;
+	    } else if (typoef(this.props.anchor) === "function") {
+	      return this.props.anchor();
+	    } else {
+	      return this.props.anchor;
+	    }
 	  },
 
 	  _tetherOptions: function _tetherOptions() {
