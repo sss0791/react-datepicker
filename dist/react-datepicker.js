@@ -133,7 +133,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        handleEnter: this.hideCalendar,
 	        setSelected: this.setSelected,
 	        hideCalendar: this.hideCalendar,
-	        placeholderText: this.props.placeholderText }),
+	        placeholderText: this.props.placeholderText,
+	        component: this.props.component }),
 	      this.calendar()
 	    );
 	  }
@@ -407,13 +408,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderDay: function renderDay(day, key) {
 	    var minDate = new DateUtil(this.props.minDate).safeClone(),
 	        maxDate = new DateUtil(this.props.maxDate).safeClone(),
-	        disabled = day.isBefore(minDate) || day.isAfter(maxDate);
+	        disabled = day.isBefore(minDate) || day.isAfter(maxDate),
+	        sameMonth = day.sameMonth(this.state.date);
 
 	    return React.createElement(Day, {
 	      key: key,
 	      day: day,
 	      date: this.state.date,
 	      onClick: this.handleDayClick.bind(this, day),
+	      notInMonth: !sameMonth,
 	      selected: new DateUtil(this.props.selected),
 	      disabled: disabled });
 	  },
@@ -481,7 +484,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      dateFormat: "YYYY-MM-DD"
+	      dateFormat: "YYYY-MM-DD",
+	      component: "input"
 	    };
 	  },
 
@@ -547,7 +551,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
-	    return React.createElement("input", {
+	    return React.createElement(this.props.component, {
 	      ref: "input",
 	      type: "text",
 	      value: this.state.value,
@@ -556,7 +560,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onFocus: this.props.onFocus,
 	      onChange: this.handleChange,
 	      className: "datepicker__input",
-	      placeholder: this.props.placeholderText });
+	      placeholder: this.props.placeholderText
+	    });;
 	  }
 	});
 
@@ -596,6 +601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var classes = React.addons.classSet({
 	      datepicker__day: true,
 	      "datepicker__day--disabled": this.props.disabled,
+	      "datepicker__day--not-in-month": this.props.notInMonth,
 	      "datepicker__day--selected": this.props.day.sameDay(this.props.selected),
 	      "datepicker__day--today": this.props.day.sameDay(moment())
 	    });

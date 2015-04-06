@@ -82,7 +82,8 @@ var Calendar = React.createClass({
   renderDay: function(day, key) {
     var minDate = new DateUtil(this.props.minDate).safeClone(),
         maxDate = new DateUtil(this.props.maxDate).safeClone(),
-        disabled = day.isBefore(minDate) || day.isAfter(maxDate);
+        disabled = day.isBefore(minDate) || day.isAfter(maxDate),
+        sameMonth = day.sameMonth(this.state.date);
 
     return (
       <Day
@@ -90,6 +91,7 @@ var Calendar = React.createClass({
         day={day}
         date={this.state.date}
         onClick={this.handleDayClick.bind(this, day)}
+        notInMonth={!sameMonth}
         selected={new DateUtil(this.props.selected)}
         disabled={disabled} />
     );
