@@ -107,7 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.state.focus) {
 	      return React.createElement(
 	        Popover,
-	        null,
+	        { anchor: this.props.anchor },
 	        React.createElement(Calendar, {
 	          selected: this.props.selected,
 	          onSelect: this.handleSelect,
@@ -187,10 +187,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 
+	  _getAnchorElement: function _getAnchorElement() {
+	    return this.props.anchor ? this.props.anchor : this.getDOMNode().parentElement;
+	  },
+
 	  _tetherOptions: function _tetherOptions() {
 	    return {
 	      element: this._popoverElement,
-	      target: this.getDOMNode().parentElement,
+	      target: this._getAnchorElement(),
 	      attachment: "top left",
 	      targetAttachment: "bottom left",
 	      targetOffset: "10px 0",

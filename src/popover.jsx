@@ -30,10 +30,14 @@ var Popover = React.createClass({
     );
   },
 
+  _getAnchorElement: function(){
+    return this.props.anchor ? this.props.anchor : this.getDOMNode().parentElement;
+  },
+
   _tetherOptions: function() {
     return {
       element: this._popoverElement,
-      target: this.getDOMNode().parentElement,
+      target: this._getAnchorElement(),
       attachment: 'top left',
       targetAttachment: 'bottom left',
       targetOffset: '10px 0',

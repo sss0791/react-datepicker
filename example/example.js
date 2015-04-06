@@ -225,7 +225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.state.focus) {
 	      return React.createElement(
 	        Popover,
-	        null,
+	        { anchor: this.props.anchor },
 	        React.createElement(Calendar, {
 	          selected: this.props.selected,
 	          onSelect: this.handleSelect,
@@ -251,7 +251,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        handleEnter: this.hideCalendar,
 	        setSelected: this.setSelected,
 	        hideCalendar: this.hideCalendar,
-	        placeholderText: this.props.placeholderText }),
+	        placeholderText: this.props.placeholderText,
+	        input: this.props.input,
+	        inputProps: this.props.inputProps }),
 	      this.calendar()
 	    );
 	  }
@@ -297,10 +299,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 
+	  _getAnchorElement: function _getAnchorElement() {
+	    return this.props.anchor ? this.props.anchor : this.getDOMNode().parentElement;
+	  },
+
 	  _tetherOptions: function _tetherOptions() {
 	    return {
 	      element: this._popoverElement,
-	      target: this.getDOMNode().parentElement,
+	      target: this._getAnchorElement(),
 	      attachment: "top left",
 	      targetAttachment: "bottom left",
 	      targetOffset: "10px 0",
@@ -519,13 +525,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderDay: function renderDay(day, key) {
 	    var minDate = new DateUtil(this.props.minDate).safeClone(),
 	        maxDate = new DateUtil(this.props.maxDate).safeClone(),
-	        disabled = day.isBefore(minDate) || day.isAfter(maxDate);
+	        disabled = day.isBefore(minDate) || day.isAfter(maxDate),
+	        sameMonth = day.sameMonth(this.state.date);
 
 	    return React.createElement(Day, {
 	      key: key,
 	      day: day,
 	      date: this.state.date,
 	      onClick: this.handleDayClick.bind(this, day),
+	      notInMonth: !sameMonth,
 	      selected: new DateUtil(this.props.selected),
 	      disabled: disabled });
 	  },
@@ -587,13 +595,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 	var DateUtil = __webpack_require__(6);
 	var moment = __webpack_require__(3);
+	var assign = __webpack_require__(12);
 
 	var DateInput = React.createClass({
 	  displayName: "DateInput",
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      dateFormat: "YYYY-MM-DD"
+	      dateFormat: "YYYY-MM-DD",
+	      input: "input"
 	    };
 	  },
 
@@ -659,7 +669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
-	    return React.createElement("input", {
+	    return React.createElement(this.props.input, assign({
 	      ref: "input",
 	      type: "text",
 	      value: this.state.value,
@@ -668,7 +678,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onFocus: this.props.onFocus,
 	      onChange: this.handleChange,
 	      className: "datepicker__input",
-	      placeholder: this.props.placeholderText });
+	      placeholder: this.props.placeholderText
+	    }, this.props.inputProps));
 	  }
 	});
 
@@ -702,6 +713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var classes = React.addons.classSet({
 	      datepicker__day: true,
 	      "datepicker__day--disabled": this.props.disabled,
+	      "datepicker__day--not-in-month": this.props.notInMonth,
 	      "datepicker__day--selected": this.props.day.sameDay(this.props.selected),
 	      "datepicker__day--today": this.props.day.sameDay(moment())
 	    });
@@ -2177,6 +2189,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	return this.Tether;
 
 	}));
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule Object.assign
+	 */
+
+	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign
+
+	'use strict';
+
+	function assign(target, sources) {
+	  if (target == null) {
+	    throw new TypeError('Object.assign target cannot be null or undefined');
+	  }
+
+	  var to = Object(target);
+	  var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	  for (var nextIndex = 1; nextIndex < arguments.length; nextIndex++) {
+	    var nextSource = arguments[nextIndex];
+	    if (nextSource == null) {
+	      continue;
+	    }
+
+	    var from = Object(nextSource);
+
+	    // We don't currently support accessors nor proxies. Therefore this
+	    // copy cannot throw. If we ever supported this then we must handle
+	    // exceptions and side-effects. We don't support symbols so they won't
+	    // be transferred.
+
+	    for (var key in from) {
+	      if (hasOwnProperty.call(from, key)) {
+	        to[key] = from[key];
+	      }
+	    }
+	  }
+
+	  return to;
+	}
+
+	module.exports = assign;
 
 
 /***/ }
