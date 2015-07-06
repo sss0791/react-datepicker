@@ -103,7 +103,7 @@ var Calendar = React.createClass({
 
   header: function() {
     return moment.weekdaysMin().map(function(day, key) {
-      return <div className="datepicker__day" key={key}>{day}</div>;
+      return <div className="datepicker__week-day" key={key}>{day}</div>;
     });
   },
 

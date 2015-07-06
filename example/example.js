@@ -2011,7 +2011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return moment.weekdaysMin().map(function (day, key) {
 	      return React.createElement(
 	        "div",
-	        { className: "datepicker__day", key: key },
+	        { className: "datepicker__week-day", key: key },
 	        day
 	      );
 	    });
