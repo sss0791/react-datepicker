@@ -1,90 +1,109 @@
-var React = require('react/addons');
-var DateUtil = require('./util/date');
-var moment = require('moment');
-var assign = require('react/lib/Object.assign');
+import moment from "moment";
+import DateUtil from "./util/date";
+import ReactDOM from "react-dom";
+import React from "react";
 
 var DateInput = React.createClass({
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
-      dateFormat: 'YYYY-MM-DD',
-      input: 'input'
+      dateFormat: "YYYY-MM-DD",
+      className: "datepicker__input",
+      input: 'input',
+      inputProps: {},
+      onBlur() {}
     };
   },
 
-  getInitialState: function() {
-    return {
-      value: this.safeDateFormat(this.props.date)
-    };
+  componentWillMount() {
+    this.setState({
+        maybeDate: this.safeDateFormat(this.props.date)
+    });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.toggleFocus(this.props.focus);
   },
 
-  componentWillReceiveProps: function(newProps) {
+  componentWillReceiveProps(newProps) {
     this.toggleFocus(newProps.focus);
 
-    this.setState({
-      value: this.safeDateFormat(newProps.date)
-    });
+    // If we're receiving a different date then apply it.
+    // If we're receiving a null date continue displaying the
+    // value currently in the textbox.
+    if (newProps.date != this.props.date) {
+        this.setState({
+            maybeDate: this.safeDateFormat(newProps.date)
+        });
+    }
   },
 
-  toggleFocus: function(focus) {
+  toggleFocus(focus) {
     if (focus) {
-      React.findDOMNode(this.refs.input).focus();
+      this.refs.input.focus();
     } else {
-      React.findDOMNode(this.refs.input).blur();
+      this.refs.input.blur();
     }
   },
 
-  handleChange: function(event) {
-    var date = moment(event.target.value, this.props.dateFormat, true);
+  handleChange(event) {
+    var value = event.target.value;
+    var date = moment(value, this.props.dateFormat, true);
+
+    if (date.isValid()) {
+      this.props.setSelected(new DateUtil(date));
+    } else {
+        this.props.invalidateSelected();
+    }
 
     this.setState({
-      value: event.target.value
+        maybeDate: value
     });
-
-    if (this.isValueAValidDate()) {
-      this.props.setSelected(new DateUtil(date));
-    }
   },
 
-  safeDateFormat: function(date) {
-    return !! date ? date.format(this.props.dateFormat) : null;
+  safeDateFormat(date) {
+    return !!date ? date.format(this.props.dateFormat) : null;
   },
 
-  isValueAValidDate: function() {
-    var date = moment(event.target.value, this.props.dateFormat, true);
-
-    return date.isValid();
-  },
-
-  handleKeyDown: function(event) {
-    switch(event.key) {
+  handleKeyDown(event) {
+    switch (event.key) {
     case "Enter":
       event.preventDefault();
       this.props.handleEnter();
       break;
+    case "Escape":
+      event.preventDefault();
+      this.props.hideCalendar();
+      break;
     }
   },
 
-  handleClick: function(event) {
-    this.props.handleClick(event);
+  handleClick(event) {
+    if (!this.props.disabled) {
+      this.props.handleClick(event);
+    }
   },
 
-  render: function() {
-    return React.createElement(this.props.input, assign({
-        ref: "input",
-        type: "text",
-        value: this.state.value,
-        onClick: this.handleClick,
-        onKeyDown: this.handleKeyDown,
-        onFocus: this.props.onFocus,
-        onChange: this.handleChange,
-        className: "datepicker__input",
-        placeholder: this.props.placeholderText
-      }, this.props.inputProps));
+  render() {
+    return React.createElement(this.props.input, {
+      ref: "input",
+      type: "text",
+      id: this.props.id,
+      name: this.props.name,
+      value: this.state.maybeDate,
+      onClick: this.handleClick,
+      onKeyDown: this.handleKeyDown,
+      onFocus: this.props.onFocus,
+      onBlur: this.props.onBlur,
+      onChange: this.handleChange,
+      className: this.props.className,
+      disabled: this.props.disabled,
+      placeholder: this.props.placeholderText,
+      readOnly: this.props.readOnly,
+      required: this.props.required,
+      tabIndex: this.props.tabIndex,
+      // ...this.props.inputProps
+    });
   }
 });
 

@@ -1,24 +1,41 @@
-var React = require('react/addons');
-var moment = require('moment');
+import moment from "moment";
+import React from "react";
 
 var Day = React.createClass({
-  handleClick: function(event) {
+  handleClick(event) {
     if (this.props.disabled) return;
 
     this.props.onClick(event);
   },
 
-  render: function() {
-    var classes = React.addons.classSet({
-      'datepicker__day': true,
-      'datepicker__day--disabled': this.props.disabled,
-      'datepicker__day--not-in-month': this.props.notInMonth,
-      'datepicker__day--selected': this.props.day.sameDay(this.props.selected),
-      'datepicker__day--today': this.props.day.sameDay(moment())
-    });
+  isWeekend() {
+    var weekday = this.props.day.moment().weekday();
+    return weekday === 5 || weekday === 6;
+  },
+
+  render() {
+    var classes = ["datepicker__day"];
+
+    if (this.props.disabled)
+      classes.push("datepicker__day--disabled");
+
+    if (this.props.day.sameDay(this.props.selected))
+      classes.push("datepicker__day--selected");
+
+    if (this.props.notInMonth)
+      classes.push("datepicker__day--not-in-month");
+
+    if (this.props.inRange)
+      classes.push("datepicker__day--in-range");
+
+    if (this.props.day.sameDay(moment()))
+      classes.push("datepicker__day--today");
+
+    if (this.isWeekend())
+      classes.push("datepicker__day--weekend");
 
     return (
-      <div className={classes} onClick={this.handleClick}>
+      <div className={classes.join(" ")} onClick={this.handleClick}>
         {this.props.day.day()}
       </div>
     );
