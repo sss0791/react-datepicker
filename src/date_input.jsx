@@ -85,25 +85,25 @@ var DateInput = React.createClass({
   },
 
   render() {
-    return React.createElement(this.props.input, {
-      ref: "input",
-      type: "text",
-      id: this.props.id,
-      name: this.props.name,
-      value: this.state.maybeDate,
-      onClick: this.handleClick,
-      onKeyDown: this.handleKeyDown,
-      onFocus: this.props.onFocus,
-      onBlur: this.props.onBlur,
-      onChange: this.handleChange,
-      className: this.props.className,
-      disabled: this.props.disabled,
-      placeholder: this.props.placeholderText,
-      readOnly: this.props.readOnly,
-      required: this.props.required,
-      tabIndex: this.props.tabIndex,
-      // ...this.props.inputProps
-    });
+    return React.createElement(this.props.input,
+      Object.assign({
+        ref: "input",
+        type: "text",
+        id: this.props.id,
+        name: this.props.name,
+        value: this.state.maybeDate,
+        onClick: this.handleClick,
+        onKeyDown: this.handleKeyDown,
+        onFocus: this.props.onFocus,
+        onBlur: this.props.onBlur,
+        onChange: this.handleChange,
+        className: this.props.className,
+        disabled: this.props.disabled,
+        placeholder: this.props.placeholderText,
+        readOnly: this.props.readOnly,
+        required: this.props.required,
+        tabIndex: this.props.tabIndex,
+      }, this.props.inputProps));
   }
 });
 
