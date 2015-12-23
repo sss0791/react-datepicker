@@ -53,6 +53,9 @@
   position: absolute;
   left: 50px; }
 
+.tether-target-attached-top.datepicker__container {
+  margin-top: -20px; }
+
 .datepicker__header {
   text-align: center;
   background-color: #f0f0f0;
@@ -67,6 +70,8 @@
   color: #000;
   font-weight: bold;
   font-size: 13px; }
+  .datepicker__current-month--hasYearDropdown {
+    margin-bottom: 16px; }
 
 .datepicker__navigation {
   line-height: 24px;
@@ -502,6 +507,14 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
     margin: 0 auto; }
   .hero__crafted-by {
     margin-bottom: 30px; }
+  .hero__crafted-by-link {
+    color: #fff; }
+
+.github-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0; }
 
 .examples__navigation {
   display: none; }

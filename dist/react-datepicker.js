@@ -84,6 +84,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(29);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var DatePicker = _react2.default.createClass({
@@ -113,21 +117,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return {
 	      weekdays: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
 	      locale: "en",
-	      dateFormatCalendar: "MMMM",
+	      dateFormatCalendar: "MMMM YYYY",
 	      moment: _moment2.default,
 	      onChange: function onChange() {},
 
 	      disabled: false,
 	      onFocus: function onFocus() {},
-	      onBlur: function onBlur() {},
-
-	      showYearDropdown: true
+	      onBlur: function onBlur() {}
 	    };
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
 	      focus: false,
-	      virtualFocus: false,
 	      selected: this.props.selected
 	    };
 	  },
@@ -143,65 +144,78 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.state.selected;
 	  },
 	  handleFocus: function handleFocus() {
-	    this.props.onFocus();
-	    this.setState({
-	      focus: true
-	    });
-	  },
-	  handleBlur: function handleBlur() {
 	    var _this = this;
 
-	    this.setState({ virtualFocus: false }, function () {
-	      setTimeout(function () {
-	        if (!_this.state.virtualFocus) {
-	          _this.props.onBlur(_this.state.selected);
-	          _this.hideCalendar();
-	        }
-	      }, 200);
-	    });
+	    this.props.onFocus();
+	    setTimeout(function () {
+	      _this.setState({ focus: true });
+	    }, 200);
 	  },
-	  hideCalendar: function hideCalendar() {
+	  handleBlur: function handleBlur() {
 	    var _this2 = this;
 
 	    setTimeout(function () {
-	      _this2.setState({
+	      if (!_this2.state.datePickerHasFocus) {
+	        _this2.props.onBlur(_this2.state.selected);
+	        _this2.hideCalendar();
+	      }
+	    }, 200);
+	  },
+	  hideCalendar: function hideCalendar() {
+	    var _this3 = this;
+
+	    setTimeout(function () {
+	      _this3.setState({
 	        focus: false
 	      });
 	    }, 0);
 	  },
+	  doesDatePickerContainElement: function doesDatePickerContainElement(element) {
+	    var datePicker = _reactDom2.default.findDOMNode(this.refs.calendar);
+	    if (!datePicker) {
+	      return false;
+	    }
+	    return datePicker.contains(element);
+	  },
 	  handleSelect: function handleSelect(date) {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    this.setSelected(date);
 
 	    setTimeout(function () {
-	      _this3.hideCalendar();
+	      _this4.hideCalendar();
 	    }, 200);
 	  },
 	  setSelected: function setSelected(date) {
-	    var _this4 = this;
+	    var _this5 = this;
 
 	    this.setState({
 	      selected: date.moment()
 	    }, function () {
-	      _this4.props.onChange(_this4.state.selected);
+	      _this5.props.onChange(_this5.state.selected);
 	    });
 	  },
 	  invalidateSelected: function invalidateSelected() {
 	    if (this.state.selected === null) return;
 	    this.props.onChange(null);
 	  },
-	  onInputClick: function onInputClick() {
-	    if (!this.state.virtualFocus) {
-	      return this.setState({
-	        focus: true,
-	        virtualFocus: true
-	      });
-	    }
-	    this.setState({ virtualFocus: false });
+	  onInputClick: function onInputClick(event) {
+	    var _this6 = this;
+
+	    var previousFocusState = this.state.focus;
+
+	    this.setState({
+	      focus: event.target === _reactDom2.default.findDOMNode(this.refs.input) ? !this.state.focus : true,
+	      datePickerHasFocus: this.doesDatePickerContainElement(event.target)
+	    }, function () {
+	      _this6.forceUpdate();
+	      if (previousFocusState && !_this6.state.datePickerHasFocus) {
+	        _this6.hideCalendar();
+	      }
+	    });
 	  },
 	  onClearClick: function onClearClick(event) {
-	    var _this5 = this;
+	    var _this7 = this;
 
 	    event.preventDefault();
 
@@ -211,7 +225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({
 	      selected: null
 	    }, function () {
-	      _this5.props.onChange(null);
+	      _this7.props.onChange(null);
 	    });
 	  },
 	  calendar: function calendar() {
@@ -267,7 +281,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        handleEnter: this.hideCalendar,
 	        setSelected: this.setSelected,
 	        invalidateSelected: this.invalidateSelected,
-	        hideCalendar: this.hideCalendar,
 	        placeholderText: this.props.placeholderText,
 	        input: this.props.input,
 	        inputProps: this.props.inputProps,
@@ -1458,9 +1471,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  toggleFocus: function toggleFocus(focus) {
 	    if (focus) {
-	      this.refs.input.focus();
+	      _reactDom2.default.findDOMNode(this.refs.input).focus();
 	    } else {
-	      this.refs.input.blur();
+	      _reactDom2.default.findDOMNode(this.refs.input).blur();
 	    }
 	  },
 	  handleChange: function handleChange(event) {
@@ -1509,7 +1522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onFocus: this.props.onFocus,
 	      onBlur: this.props.onBlur,
 	      onChange: this.handleChange,
-	      className: this.props.className,
+	      className: "ignore-react-onclickoutside " + this.props.className,
 	      disabled: this.props.disabled,
 	      placeholder: this.props.placeholderText,
 	      readOnly: this.props.readOnly,
@@ -1549,8 +1562,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	DateUtil.prototype.inRange = function (startDate, endDate) {
 	  if (!startDate || !endDate) return false;
-	  var before = startDate._date.startOf("day").subtract(1, "seconds");
-	  var after = endDate._date.startOf("day").add(1, "seconds");
+	  var before = startDate._date.clone().startOf("day").subtract(1, "seconds");
+	  var after = endDate._date.clone().startOf("day").add(1, "seconds");
 	  return this._date.isBetween(before, after);
 	};
 
@@ -1705,7 +1718,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    dateFormat: _react2.default.PropTypes.string.isRequired,
 	    onSelect: _react2.default.PropTypes.func.isRequired,
 	    handleClick: _react2.default.PropTypes.func.isRequired,
-	    hideCalendar: _react2.default.PropTypes.func.isRequired,
 	    minDate: _react2.default.PropTypes.object,
 	    maxDate: _react2.default.PropTypes.object,
 	    startDate: _react2.default.PropTypes.object,
@@ -1716,8 +1728,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    showYearDropdown: _react2.default.PropTypes.bool
 	  },
 
-	  handleClickOutside: function handleClickOutside() {
-	    this.props.hideCalendar();
+	  handleClickOutside: function handleClickOutside(event) {
+	    this.props.handleClick(event);
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
@@ -1726,8 +1738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      weekStart: "1",
-	      showYearDropdown: true
+	      weekStart: "1"
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
